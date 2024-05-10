@@ -3,6 +3,7 @@
 *
 *  Created on: Dec 26, 2020
 *      Author: mokhwasomssi
+* 	 Modified: halvard (Feb 26, 2024)
 */
 
 #ifndef __ICM20948_H__

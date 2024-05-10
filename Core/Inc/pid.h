@@ -1,3 +1,9 @@
+/*
+ * pid.h
+ *
+ *  Created on: Feb 13, 2024
+ *      Author: halvard
+ */
 // Original fra https://github.com/geekfactory/PID (12/02/24)
 // har blitt redigert til eget bruk
 #ifndef PID_H
@@ -6,26 +12,6 @@
 #include "rovconfig.h"
 
 #define TICK_SECOND 170000000 // 170Mhz
-
-//typedef struct {
-//	// Input, output, Error and setpoint
-//	double input; //!< Current Process Value
-//	double output; //!< Corrective Output from PID Controller
-//	double setpoint; //!< Controller Setpoint
-//
-//	double error;
-//	double error_f;
-//	// Tuning parameters
-//	double Kp; //!< Stores the gain for the Proportional term
-//	double Ki; //!< Stores the gain for the Integral term
-//	double Kd; //!< Stores the gain for the Derivative term
-//	// Variables for PID algorithm
-//	double iterm; //!< Accumulator for integral term
-//	double lastin; //!< Last input value for differential term
-//	// Time related
-//	uint32_t lasttime; //!< Stores the time when the control loop ran last time
-//
-//} pidc_t;
 
 typedef struct {
   double Kp;

@@ -1,5 +1,6 @@
 // All credit to Carmine Noviello for this code
 // https://github.com/cnoviello/mastering-stm32/blob/master/nucleo-f030R8/system/include/retarget/retarget.h
+// Used to get printf to work with the STM32CubeIDE
 
 #ifndef _RETARGET_H__
 #define _RETARGET_H__

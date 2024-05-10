@@ -1,3 +1,10 @@
+/*
+ * thruster.c
+ *
+ *  Created on: Mar 9, 2024
+ *      Author: halvard
+ */
+
 #include "thruster.h"
 #include "helpers.h"
 

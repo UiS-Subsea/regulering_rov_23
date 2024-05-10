@@ -2,7 +2,7 @@
  * helpers.h
  *
  *  Created on: Feb 13, 2024
- *      Author: halva
+ *      Author: halvard
  */
 
 #ifndef INC_HELPERS_H_

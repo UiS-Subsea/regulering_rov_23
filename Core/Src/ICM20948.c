@@ -6,7 +6,7 @@
 */
 
 #include <stdio.h>
-#include "icm20948.h"
+#include "ICM20948.h"
 #include "main.h"
 
 

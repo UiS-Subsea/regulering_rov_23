@@ -1,3 +1,10 @@
+/*
+ * helpers.c
+ *
+ *  Created on: Feb 13, 2024
+ *      Author: halvard
+ */
+
 #include "helpers.h"
 #include "stm32g4xx.h"
 #include <stdio.h>

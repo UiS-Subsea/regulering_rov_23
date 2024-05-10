@@ -2,7 +2,7 @@
  * rovconfig.h
  *
  *  Created on: Apr 15, 2024
- *      Author: halva
+ *      Author: halvard
  */
 
 #ifndef INC_ROVCONFIG_H_

@@ -1,7 +1,11 @@
-// Bassert på https://github.com/geekfactory/PID (12/02/24)
-
+/*
+ * pid.c
+ *
+ *  Created on: Feb 13, 2024
+ *      Author: halvard
+ */
 #include "stm32g4xx_hal.h"
-#include "PID.h"
+#include "pid.h"
 #include "helpers.h"
 
 void pid_init(pidc_t* pid, double kp, double ki, double kd)
