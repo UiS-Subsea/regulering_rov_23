@@ -29,6 +29,7 @@
 #include "retarget.h"
 #include "helpers.h"
 //#include "ICM20948.h"
+#include "fdcan.h"
 #include "thruster.h"
 #include "pid.h"
 #include "vector.h"

@@ -457,7 +457,7 @@ void SendThrusterData(double* thrustervalues)
   for(uint8_t i = 0; i < 8; i++)
     thruster_data[i] = (float)thrustervalues[i];
 
-  hexToValues(out_thruster_data, thruster_data, sizeof(out_thruster_data), float32);
+  hexToValues((void*)out_thruster_data, (uint8_t*)thruster_data, sizeof(out_thruster_data), float32);
   int status = SendDataNew(REG_SEND_THRUSTER_PAADRAG, out_thruster_data, sizeof(out_thruster_data));
   if(status != 1) print("fdcanerr: %d\r\n",status);
 

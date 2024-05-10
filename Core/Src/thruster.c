@@ -344,8 +344,8 @@ void thruster_test()
   matrix_t U[8] = {0};
   matrix_t u[8] = {0};
   print("Testing power calculations\r\n");
-  print("  %dN -> %.1fW, expected %.1fW\r\n",35,thruster_map_force_to_power(35),204.6f);
-  print(" %dN -> %.1fW, expected %.1fW\r\n",-35,thruster_map_force_to_power(-35),299.8f);
+  print("  %dN -> %.1fW, expected %.1fW\r\n",35,thruster_map_force_to_power_single(35),204.6f);
+  print(" %dN -> %.1fW, expected %.1fW\r\n",-35,thruster_map_force_to_power_single(-35),299.8f);
   print("\r\n");
   print("Testing matrix calculations\r\n");
   print("  tau wanted = ");
@@ -365,7 +365,7 @@ void thruster_test()
   print("  result tau = ");
   matrix_print_vec(6, tau);
   //timstop();
-  print("  pwr = %.1f Watt\r\n",thruster_map_force_to_power_sum(U));
+  print("  pwr = %.1f Watt\r\n",thruster_map_force_to_power(U));
 
   Test_Handler();
 }
