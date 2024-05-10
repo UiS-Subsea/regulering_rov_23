@@ -310,9 +310,23 @@ int main(void)
 //    print("u = ");
 //    matrix_print_vec(8, u);
 
-    //while(1){}
+    static double u_last[8] = {0};
+    const double softstart_alpha = 0.08; // iir alpha
+    const double softstart_percent_threshold = 10.0; // percent
+    for(unsigned i = 0; i < 8; i++)
+    {
+      // check if rapid change in pwm, if not pass
+      if(abs(u[i] - u_last[i]) < softstart_percent_threshold)
+      {
+        continue;
+      }
+      // softstart
+      u[i] = iir_filter(u_last[i],u[i],softstart_alpha);
+    }
     thruster_set_power_percents(u);
 
+    // save
+    memcpy(u_last, u, sizeof(u));
 
     /* USER CODE END WHILE */
 

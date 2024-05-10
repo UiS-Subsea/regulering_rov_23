@@ -6,4 +6,4 @@ Key configurations, such as maximum power settings and enabling serial printing,
 
 ## Pending Tasks
 - **IMU Connection**: There is an existing issue where PWM behaves unexpectedly when SPI1 is enabled. This needs to be addressed to successfully connect the Inertial Measurement Unit (IMU).
-- **Motor Soft Start**: Implement a soft start feature for the motors to prevent abrupt movements at startup.
+- **Motor Soft Start**: <s>Implement a soft start feature for the motors to prevent abrupt movements at startup.</s> Implemented, but needs testing and adjusting of parameters.
