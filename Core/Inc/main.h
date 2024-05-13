@@ -85,6 +85,8 @@ void Test_Handler(void);
 #define SPI1_CS_GPIO_Port GPIOB
 #define PWM_1_Pin GPIO_PIN_7
 #define PWM_1_GPIO_Port GPIOB
+#define LD2_Pin GPIO_PIN_8
+#define LD2_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

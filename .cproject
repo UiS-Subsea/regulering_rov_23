@@ -80,8 +80,8 @@
 					<fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.263376444.2075655765" name="ICM20948.h" rcbsApplicability="disable" resourcePath="Core/Inc/ICM20948.h" toolsToInvoke=""/>
 					<sourceEntries>
 						<entry excluding="Src/ICM20948.c|Src/syscalls.c|Inc/ICM20948.h" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Linalg/Src"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -162,8 +162,8 @@
 					<fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.release.1590778545.929157542" name="ICM20948.h" rcbsApplicability="disable" resourcePath="Core/Inc/ICM20948.h" toolsToInvoke=""/>
 					<sourceEntries>
 						<entry excluding="Src/ICM20948.c|Src/syscalls.c|Inc/ICM20948.h" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Linalg/Src"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

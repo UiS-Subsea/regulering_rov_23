@@ -451,14 +451,14 @@ int SendDataNew(uint16_t adr, void* data, uint8_t size)
  *        Aksepterte verdier: uint8, uint16, float*/
 
 float thruster_data[8];
-float out_thruster_data[8];
 void SendThrusterData(double* thrustervalues)
 {
   for(uint8_t i = 0; i < 8; i++)
     thruster_data[i] = (float)thrustervalues[i];
 
-  hexToValues((void*)out_thruster_data, (uint8_t*)thruster_data, sizeof(out_thruster_data), float32);
-  int status = SendDataNew(REG_SEND_THRUSTER_PAADRAG, out_thruster_data, sizeof(out_thruster_data));
+  swap_endianess(thruster_data, sizeof(thruster_data), sizeof(float));
+
+  int status = SendDataNew(REG_SEND_THRUSTER_PAADRAG, thruster_data, sizeof(thruster_data));
   if(status != 1) print("fdcanerr: %d\r\n",status);
 
 //  uint8_t status = SendData(REG_THRUSTER_PAADRAG, thrustervalues, 8*sizeof(float), float32);
@@ -475,15 +475,12 @@ void SendStatusData(void* data)
 uint8_t RxData[64];
 
 // Definering av verdilister som hentes fra CANFD nettverk
-
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs) {
   // Går gjennom alle meldinger i fifo bufferen
   while (HAL_FDCAN_GetRxFifoFillLevel(hfdcan, FDCAN_RX_FIFO0) > 0) {
     HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData);
-
-    uint16_t sizebytes = RxHeader.DataLength;
     uint16_t id = (RxHeader.Identifier & 0xFFF);
-    canfd_callback(id, RxData, sizebytes); // definert i main
+    canfd_callback(id, RxData);
   }
 }
 
@@ -492,9 +489,8 @@ void HAL_FDCAN_RxFifo1Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo1ITs)
   while (HAL_FDCAN_GetRxFifoFillLevel(hfdcan, FDCAN_RX_FIFO1) > 0) {
     HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO1, &RxHeader, RxData);
 
-    uint16_t sizebytes = RxHeader.DataLength;
     uint16_t id = (RxHeader.Identifier & 0xFFF);
-    canfd_callback(id, RxData, sizebytes); // definert i main
+    canfd_callback(id, RxData);
   }
 }
 

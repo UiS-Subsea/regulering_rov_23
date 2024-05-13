@@ -149,12 +149,12 @@ int main(void)
   MX_TIM3_Init();
   MX_FDCAN1_Init();
   /* USER CODE BEGIN 2 */
+  CANFD_Init();
 
   BIT_CLEAR(status_byte, STATUS_THRUSTER_ENABLED);
   BIT_CLEAR(status_byte, STATUS_PIDS_SET);
 
   RetargetInit(&huart2);
-  CANFD_Init();
 
   thruster_init();
   print("- Motors Initialized\r\n");
@@ -195,6 +195,15 @@ int main(void)
 
 
   print("- Controllers Initialized\r\n");
+
+  // BLINK on initialized
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 1);
+  HAL_Delay(250);
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 0);
+  HAL_Delay(250);
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 1);
+  HAL_Delay(250);
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 0);
 
   //thruster_test();
   /* USER CODE END 2 */
@@ -390,13 +399,14 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 float floatdata[9];
-void canfd_callback(uint16_t id, void* rxdata, uint16_t rxbytes)
+void canfd_callback(uint16_t id, void* rxdata)
 {
   float* pfloat = rxdata; // assign ptrfloat to same address as rxdata(start of rxbuffer)
 
   switch(id)
   {
   case REG_KONTROLL:
+    // currently bypassed, motors automatically enabled on pids set
     // No need to swap endianess for uint8_t[]
     uint8_t kontroll_byte = ((uint8_t*)rxdata)[4];
     bool enable_motors_requested = kontroll_byte & 0x01;
@@ -413,7 +423,7 @@ void canfd_callback(uint16_t id, void* rxdata, uint16_t rxbytes)
     SendDataNew(PING_TX, pingblock, sizeof(pingblock));
     break;
   case REG_POSITION_MEASURED:
-    swap_endianess(pfloat, rxbytes, sizeof(float));
+    swap_endianess(pfloat, 8*sizeof(float), sizeof(float));
 
     double figure_of_merit = pfloat[6];
     double dt = pfloat[7]; // time since last measurement
@@ -433,7 +443,7 @@ void canfd_callback(uint16_t id, void* rxdata, uint16_t rxbytes)
     }
     break;
   case REG_VELOCITY_MEASURED:
-    swap_endianess(pfloat, rxbytes, sizeof(float));
+    swap_endianess(pfloat, 4*sizeof(float), sizeof(float));
 
     for(unsigned i = 0; i < 3; i++)
     {
@@ -442,7 +452,7 @@ void canfd_callback(uint16_t id, void* rxdata, uint16_t rxbytes)
     double distanse_til_bunnen = pfloat[3];
     break;
   case REG_PID_SET_ANGULAR_PARAMS:
-    swap_endianess(pfloat, rxbytes, sizeof(float));
+    swap_endianess(pfloat, 9*sizeof(float), sizeof(float));
 
     angular_pids_set = true;
     pid_set_k(&pid_tx, pfloat[0], pfloat[1], pfloat[2]);
@@ -452,7 +462,7 @@ void canfd_callback(uint16_t id, void* rxdata, uint16_t rxbytes)
     matrix_print_vecf(9, floatdata);
     break;
   case REG_PID_SET_LINEAR_PARAMS:
-    swap_endianess(pfloat, rxbytes, sizeof(float));
+    swap_endianess(pfloat, 9*sizeof(float), sizeof(float));
 
     linear_pids_set = true;
     pid_set_k(&pid_vx, pfloat[0], pfloat[1], pfloat[2]);
@@ -462,7 +472,7 @@ void canfd_callback(uint16_t id, void* rxdata, uint16_t rxbytes)
     matrix_print_vecf(9, pfloat);
     break;
   case REG_ANGULAR_VELOCITY_TARGET:
-    swap_endianess(pfloat, rxbytes, sizeof(float));
+    swap_endianess(pfloat, 3*sizeof(float), sizeof(float));
 
     last_controll_time = HAL_GetTick();
     for(uint8_t i = 0; i < 3; i++)
@@ -472,7 +482,7 @@ void canfd_callback(uint16_t id, void* rxdata, uint16_t rxbytes)
 
     break;
   case REG_LINEAR_VELOCITY_TARGET:
-    swap_endianess(pfloat, rxbytes, sizeof(float));
+    swap_endianess(pfloat, 3*sizeof(float), sizeof(float));
 
     last_controll_time = HAL_GetTick();
     for(uint8_t i = 0; i < 3; i++)
@@ -481,7 +491,8 @@ void canfd_callback(uint16_t id, void* rxdata, uint16_t rxbytes)
     }
 
     break;
-  default: break;
+  default:
+    break;
   }
 }
 
@@ -502,8 +513,9 @@ void Error_Handler(void)
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
   print("ERROR! system crashed\r\n");
-  thruster_deinit(); // force stop motors
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 1); // enable led
   __disable_irq();
+  thruster_deinit(); // force stop motors
   while (1){}
   /* USER CODE END Error_Handler_Debug */
 }
