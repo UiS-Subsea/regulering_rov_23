@@ -159,7 +159,6 @@ int main(void)
   thruster_init();
   print("- Motors Initialized\r\n");
 
-
   //thruster_test_cmd();
   //thruster_test_dutycycle();
 
@@ -310,6 +309,8 @@ int main(void)
 //    print("u = ");
 //    matrix_print_vec(8, u);
 
+    static double u_last[8] = {0};
+
     const double max_change = 2.0; // percent
     for(unsigned i = 0; i < 8; i++)
     {
@@ -389,14 +390,15 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 float floatdata[9];
-void canfd_callback(uint16_t id, void* RxData)
+void canfd_callback(uint16_t id, void* rxdata, uint16_t rxbytes)
 {
-  hexToValues(floatdata, RxData , sizeof(floatdata), float32);
+  float* pfloat = rxdata; // assign ptrfloat to same address as rxdata(start of rxbuffer)
 
   switch(id)
   {
   case REG_KONTROLL:
-    uint8_t kontroll_byte = ((uint8_t*)RxData)[4];
+    // No need to swap endianess for uint8_t[]
+    uint8_t kontroll_byte = ((uint8_t*)rxdata)[4];
     bool enable_motors_requested = kontroll_byte & 0x01;
     if(enable_motors_requested && angular_pids_set && linear_pids_set)
     {
@@ -405,67 +407,77 @@ void canfd_callback(uint16_t id, void* RxData)
     }
     break;
   case PING_RX:
-    uint8_t* pingblock = (uint8_t*)RxData;
+    uint8_t* pingblock = (uint8_t*)rxdata;
     pingblock[0] += 1;
-
     print("Ping recieved\r\n");
     SendDataNew(PING_TX, pingblock, sizeof(pingblock));
     break;
   case REG_POSITION_MEASURED:
-    double figure_of_merit = floatdata[6];
-    double dt = floatdata[7]; // time since last measurement
+    swap_endianess(pfloat, rxbytes, sizeof(float));
 
-    for(uint8_t i = 0; i < 3; i++)
+    double figure_of_merit = pfloat[6];
+    double dt = pfloat[7]; // time since last measurement
+
+    for(unsigned i = 0; i < 3; i++)
     {
       posisjon_last[i] = posisjon[i];
       rotasjon_last[i] = rotasjon[i];
 
-      posisjon[i] = (double)floatdata[i];
-      rotasjon[i] = (double)floatdata[i+3];
+      posisjon[i] = pfloat[i];
+      rotasjon[i] = pfloat[i+3];
 
-      if(dt < 2.0)
+      if(dt > 0)
       {
         rotasjonfart[i] = (rotasjon[i] - rotasjon_last[i])/dt;
       }
     }
     break;
   case REG_VELOCITY_MEASURED:
-    for(uint8_t i = 0; i < 3; i++)
+    swap_endianess(pfloat, rxbytes, sizeof(float));
+
+    for(unsigned i = 0; i < 3; i++)
     {
-      fart[i] = (double)floatdata[i];
+      fart[i] = (double)pfloat[i];
     }
-    double distanse_til_bunnen = floatdata[3];
+    double distanse_til_bunnen = pfloat[3];
     break;
   case REG_PID_SET_ANGULAR_PARAMS:
+    swap_endianess(pfloat, rxbytes, sizeof(float));
+
     angular_pids_set = true;
-    pid_set_k(&pid_tx, (double)floatdata[0], (double)floatdata[1], (double)floatdata[2]);
-    pid_set_k(&pid_ty, (double)floatdata[3], (double)floatdata[4], (double)floatdata[5]);
-    pid_set_k(&pid_tz, (double)floatdata[6], (double)floatdata[7], (double)floatdata[8]);
+    pid_set_k(&pid_tx, pfloat[0], pfloat[1], pfloat[2]);
+    pid_set_k(&pid_ty, pfloat[3], pfloat[4], pfloat[5]);
+    pid_set_k(&pid_tz, pfloat[6], pfloat[7], pfloat[8]);
     print("angular: ");
     matrix_print_vecf(9, floatdata);
     break;
   case REG_PID_SET_LINEAR_PARAMS:
+    swap_endianess(pfloat, rxbytes, sizeof(float));
+
     linear_pids_set = true;
-    pid_set_k(&pid_vx, (double)floatdata[0], (double)floatdata[1], (double)floatdata[2]);
-    pid_set_k(&pid_vy, (double)floatdata[3], (double)floatdata[4], (double)floatdata[5]);
-    pid_set_k(&pid_vz, (double)floatdata[6], (double)floatdata[7], (double)floatdata[8]);
+    pid_set_k(&pid_vx, pfloat[0], pfloat[1], pfloat[2]);
+    pid_set_k(&pid_vy, pfloat[3], pfloat[4], pfloat[5]);
+    pid_set_k(&pid_vz, pfloat[6], pfloat[7], pfloat[8]);
     print("linear: ");
-    matrix_print_vecf(9, floatdata);
+    matrix_print_vecf(9, pfloat);
     break;
   case REG_ANGULAR_VELOCITY_TARGET:
+    swap_endianess(pfloat, rxbytes, sizeof(float));
+
     last_controll_time = HAL_GetTick();
     for(uint8_t i = 0; i < 3; i++)
     {
-      rotasjonfart_target[i] = (double)floatdata[i];
+      rotasjonfart_target[i] = pfloat[i];
     }
 
     break;
   case REG_LINEAR_VELOCITY_TARGET:
-    //matrix_print_vec(3, pfloats);
+    swap_endianess(pfloat, rxbytes, sizeof(float));
+
     last_controll_time = HAL_GetTick();
     for(uint8_t i = 0; i < 3; i++)
     {
-      fart_target[i] = (double)floatdata[i];
+      fart_target[i] = pfloat[i];
     }
 
     break;

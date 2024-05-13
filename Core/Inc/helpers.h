@@ -43,4 +43,6 @@ void matrix_print_vecf(uint8_t s, float A[s]);
 void matrix_eye(uint8_t s, matrix_t A[s][s]);
 void diagonal_matrix_inverse(uint8_t s, matrix_t A[s][s],matrix_t inv_A[s][s]);
 
+void swap_endianess(void* data, uint8_t datasize, uint8_t typesize);
+
 #endif /* INC_HELPERS_H_ */

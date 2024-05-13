@@ -8,6 +8,7 @@
 #include "helpers.h"
 #include "stm32g4xx.h"
 #include <stdio.h>
+#include <stdint.h>
 
 void zeromem(void* pData, size_t size)
 {
@@ -87,6 +88,25 @@ void diagonal_matrix_inverse(uint8_t s, matrix_t A[s][s],matrix_t inv_A[s][s])
     // Sjekker ikke for singularities, da må du evt sjekke om A[i][i] == 0
     inv_A[i][i] = 1.0f / A[i][i];
   }
+}
+
+void swap_endianess(void* data, uint8_t datasize, uint8_t typesize) {
+      uint8_t* bytes = (uint8_t*)data;
+
+      if(datasize % typesize != 0)
+      {
+        print("swap_endianess datasize%typesize!=0\r\n");
+        Error_Handler();
+      }
+
+      uint8_t num_data = datasize / typesize;
+      for (uint8_t i = 0; i < num_data; ++i) {
+          for (uint8_t j = 0; j < typesize / 2; ++j) {
+              uint8_t temp = bytes[i * typesize + j];
+              bytes[i * typesize + j] = bytes[(i + 1) * typesize - 1 - j];
+              bytes[(i + 1) * typesize - 1 - j] = temp;
+          }
+      }
 }
 
 void print(const char* format, ...)

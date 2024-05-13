@@ -106,7 +106,7 @@ int SendData(uint16_t adr, void* data, uint8_t size, DataType dataType);
 int SendDataNew(uint16_t adr, void* data, uint8_t size);
 int hexToValues(void* voidData, const uint8_t* hexData, uint8_t sizeBytes, DataType dataType);
 
-void canfd_callback(uint16_t id, void* data);
+void canfd_callback(uint16_t id, void* rxdata, uint16_t rxlen);
 void SendThrusterData(double* thrustervalues);
 void SendStatusData(void* data);
 

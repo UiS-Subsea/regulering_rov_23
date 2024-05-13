@@ -481,8 +481,9 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
   while (HAL_FDCAN_GetRxFifoFillLevel(hfdcan, FDCAN_RX_FIFO0) > 0) {
     HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData);
 
+    uint16_t sizebytes = RxHeader.DataLength;
     uint16_t id = (RxHeader.Identifier & 0xFFF);
-    canfd_callback(id, RxData); // definert i main
+    canfd_callback(id, RxData, sizebytes); // definert i main
   }
 }
 
@@ -491,8 +492,9 @@ void HAL_FDCAN_RxFifo1Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo1ITs)
   while (HAL_FDCAN_GetRxFifoFillLevel(hfdcan, FDCAN_RX_FIFO1) > 0) {
     HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO1, &RxHeader, RxData);
 
+    uint16_t sizebytes = RxHeader.DataLength;
     uint16_t id = (RxHeader.Identifier & 0xFFF);
-    canfd_callback(id, RxData); // definert i main
+    canfd_callback(id, RxData, sizebytes); // definert i main
   }
 }
 

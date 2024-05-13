@@ -56,7 +56,6 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 void Test_Handler(void);
-void canfd_callback(uint16_t id, void* data);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
