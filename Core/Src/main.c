@@ -306,8 +306,8 @@ int main(void)
 //    matrix_print_vec(3, fart_target);
 //    print("fart = ");
 //    matrix_print_vec(3, fart);
-    print("tau = ");
-    matrix_print_vec(6, tau);
+//    print("tau = ");
+//    matrix_print_vec(6, tau);
 
     // Calculate thruster power in newtons
     thruster_calc_force_safe(tau, U);

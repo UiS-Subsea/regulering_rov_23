@@ -17,7 +17,7 @@
 
 #include "matrix.h"
 
-#define ENABLE_LOGGING
+//#define ENABLE_LOGGING
 #define ENABLE_FDCAN
 //#define ENABLE_IMU
 
