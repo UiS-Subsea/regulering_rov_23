@@ -17,11 +17,11 @@
 
 #include "matrix.h"
 
-//#define ENABLE_LOGGING
+#define ENABLE_LOGGING
 #define ENABLE_FDCAN
 //#define ENABLE_IMU
 
-#define SEND_THRUSTERDATA_INTERVALL 160
+#define SEND_THRUSTERDATA_INTERVALL 200
 #define SEND_STATUS_INTERVALL 500
 
 #define MAX_ROV_CONTROL_DEADTIME 1000 // if no control input within 1sec of last, shutdown motors

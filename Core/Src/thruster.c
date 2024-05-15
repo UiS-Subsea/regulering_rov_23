@@ -236,7 +236,7 @@ void thruster_set_dutycycle(Motor motor, double dutycycle)
   switch(motor)
   {
   case M1:
-    TIM3->CCR3 = (uint32_t)(dutycycle*TIM3->ARR); // PWM 4
+    TIM3->CCR4 = (uint32_t)(dutycycle*TIM3->ARR); // PWM 1
     break;
   case M2:
     TIM3->CCR1 = (uint32_t)(dutycycle*TIM3->ARR); // PWM 7
@@ -245,19 +245,19 @@ void thruster_set_dutycycle(Motor motor, double dutycycle)
     TIM2->CCR1 = (uint32_t)(dutycycle*TIM2->ARR); // PWM 5
     break;
   case M4:
-    TIM3->CCR4 = (uint32_t)(dutycycle*TIM3->ARR); // PWM 1
+    TIM2->CCR3 = (uint32_t)(dutycycle*TIM2->ARR); // PWM 2
     break;
   case M5:
-    TIM2->CCR4 = (uint32_t)(dutycycle*TIM2->ARR); // PWM 3
+    TIM3->CCR3 = (uint32_t)(dutycycle*TIM3->ARR); // PWM 4
     break;
   case M6:
-    TIM2->CCR3 = (uint32_t)(dutycycle*TIM2->ARR); // PWM 2
+    TIM2->CCR2 = (uint32_t)(dutycycle*TIM2->ARR); // PWM 6
     break;
   case M7:
     TIM3->CCR2 = (uint32_t)(dutycycle*TIM3->ARR); // PWM 8
     break;
   case M8:
-    TIM2->CCR2 = (uint32_t)(dutycycle*TIM2->ARR); // PWM 6
+    TIM2->CCR4 = (uint32_t)(dutycycle*TIM2->ARR); // PWM 3
     break;
   default:
     break;

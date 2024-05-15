@@ -72,19 +72,19 @@ pidc_t pid_ty;
 pidc_t pid_tz;
 
 // deg
-vec3 rotasjon = {0};
-vec3 rotasjon_last = {0};
-vec3 rotasjon_target = {0};
+static vec3 rotasjon = {0};
+static vec3 rotasjon_last = {0};
+static vec3 rotasjon_target = {0};
 //  deg/s
-vec3 rotasjonfart = {0};
-vec3 rotasjonfart_target = {0};
+static vec3 rotasjonfart = {0};
+static vec3 rotasjonfart_target = {0};
 // m
-vec3 posisjon = {0};
-vec3 posisjon_last = {0};
-vec3 posisjon_target = {0};
+static vec3 posisjon = {0};
+static vec3 posisjon_last = {0};
+static vec3 posisjon_target = {0};
 //  m/s
-vec3 fart = {0};
-vec3 fart_target = {0};
+static vec3 fart = {0};
+static vec3 fart_target = {0};
 
 // gyro/accel data
 //axises gyro = {0};
@@ -258,7 +258,7 @@ int main(void)
     motors_enabled = angular_pids_set && linear_pids_set;
     if (!motors_enabled)
     {
-      print("Motors not enabled, set pids first\r\n");
+      //print("Motors not enabled, set pids first\r\n");
       continue;
     }
 
@@ -306,8 +306,8 @@ int main(void)
 //    matrix_print_vec(3, fart_target);
 //    print("fart = ");
 //    matrix_print_vec(3, fart);
-//    print("tau = ");
-//    matrix_print_vec(6, tau);
+    print("tau = ");
+    matrix_print_vec(6, tau);
 
     // Calculate thruster power in newtons
     thruster_calc_force_safe(tau, U);
@@ -320,7 +320,8 @@ int main(void)
 
     static double u_last[8] = {0};
 
-    const double max_change = 2.0; // percent
+    const double max_percent_per_second = 10.0; // percent
+    const double max_change = max_percent_per_second * loop_dt_sec;
     for(unsigned i = 0; i < 8; i++)
     {
       // check if rapid change in pwm, if not pass
@@ -419,7 +420,7 @@ void canfd_callback(uint16_t id, void* rxdata)
   case PING_RX:
     uint8_t* pingblock = (uint8_t*)rxdata;
     pingblock[0] += 1;
-    print("Ping recieved\r\n");
+    //print("Ping recieved\r\n");
     SendDataNew(PING_TX, pingblock, sizeof(pingblock));
     break;
   case REG_POSITION_MEASURED:
@@ -479,6 +480,8 @@ void canfd_callback(uint16_t id, void* rxdata)
     {
       rotasjonfart_target[i] = pfloat[i];
     }
+//    print("vinkeltarget: ");
+//    matrix_print_vec(3, fart_target);
 
     break;
   case REG_LINEAR_VELOCITY_TARGET:
@@ -487,8 +490,10 @@ void canfd_callback(uint16_t id, void* rxdata)
     last_controll_time = HAL_GetTick();
     for(uint8_t i = 0; i < 3; i++)
     {
-      fart_target[i] = pfloat[i];
+      fart_target[i] = (double)pfloat[i];
     }
+//    print("farttarget: ");
+//    matrix_print_vec(3, fart_target);
 
     break;
   default:
