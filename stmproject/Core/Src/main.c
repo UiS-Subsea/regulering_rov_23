@@ -456,8 +456,8 @@ void canfd_callback(uint16_t id, void* rxdata)
     swap_endianess(pfloat, 9*sizeof(float), sizeof(float));
 
     angular_pids_set = true;
-    pid_set_k(&pid_tx, pfloat[0], pfloat[1], pfloat[2]);
-    pid_set_k(&pid_ty, pfloat[3], pfloat[4], pfloat[5]);
+    pid_set_k(&pid_ty, pfloat[0], pfloat[1], pfloat[2]);// x og y er byttet om
+    pid_set_k(&pid_tx, pfloat[3], pfloat[4], pfloat[5]);
     pid_set_k(&pid_tz, pfloat[6], pfloat[7], pfloat[8]);
     print("angular: ");
     matrix_print_vecf(9, floatdata);
