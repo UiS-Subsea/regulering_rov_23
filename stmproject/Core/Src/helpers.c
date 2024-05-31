@@ -22,10 +22,10 @@ void zerovec(vec3* vec)
 static uint8_t timestamp = 0;
 
 // polynomial evaluation
-float poly_eval(float x, const double* coefs, uint8_t size)
+double poly_eval(double x, const double* coefs, uint8_t size)
 {
-  float result = 0;
-  float x_pow = 1;
+  double result = 0;
+  double x_pow = 1;
   for (int8_t i = size-1; i >= 0; i--) {
     result += x_pow * coefs[i];
     x_pow *= x;

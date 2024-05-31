@@ -32,7 +32,7 @@ typedef double vec3[3];
 void zeromem(void* pData, size_t size);
 void zerovec(vec3* vec);
 
-float poly_eval(float x, const double* coefs, uint8_t size);
+double poly_eval(double x, const double* coefs, uint8_t size);
 
 void timstart(void);
 void timstop(void);
