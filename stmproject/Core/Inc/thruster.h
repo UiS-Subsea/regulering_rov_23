@@ -38,11 +38,12 @@ void  thruster_disable(void);
 double thruster_map_force_to_power_single(double force);
 double thruster_map_force_to_power(double* forces);
 double thruster_map_force_to_percent_single(double force);
-double thruster_map_force_to_percent(double* forces, double* percents);
+void thruster_map_force_to_percent(double* forces, double* percents);
 
 /* Testing */
 void thruster_test_dutycycle(void);
-void thruster_test_cmd(void);
+void thruster_test_identify(void);
+void thruster_test_thrust(void);
 void thruster_test();
 
 /* Convertions */

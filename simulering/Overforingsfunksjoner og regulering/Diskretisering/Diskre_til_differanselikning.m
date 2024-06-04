@@ -70,8 +70,8 @@ s = tf('s');
 z = tf('z');
 Ts01 = 0.01;
 
-P = 524;
-I = 3494;
+P = 1524;
+I = 7494;
 
 N_PI_hiv= [P I];
 D_PI_hiv = [1 0];
@@ -91,50 +91,34 @@ G_hiv = tf(N_hiv_fart, D_hiv_fart);
 G_hiv_z = c2d(G_hiv, Ts01,"tustin");
 
 H_tot = feedback(G_hiv*H_PI_hiv,1);
-H_tot_z = c2d(H_tot,Ts01,'tustin');
+%H_tot_z = c2d(H_tot,Ts01,'tustin');
+
+H_tot_z = feedback(G_hiv_z*H_PI_hiv_z,1);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% differanselikninger %%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-t_slutt = 6;
-N = t_slutt/Ts01; 
-step_k = 5;
+t_slutt = 6;        % 
+N = t_slutt/Ts01;   %
+step_k = 5;         % sprang indeks
 
-u(1:step_k) = 0;
 r=ones(1,N);
 r(1:step_k) =0;
-y(1) =0;
+y(1:N) =0;
 
-[num_H_PI,den_H_PI]=tfdata(H_PI_hiv_z,'v');
-[num_G,den_G]=tfdata(G_hiv_z,'v');
+[num,den]=tfdata(H_tot_z,'v'); 
 
-e(1) = 0;
-u(1) = 0;
-
-for n = 2:N
-    y(n) = y(n-1);
-    e(n) = r(n)-y(n);
-    u(n) = num_H_PI(1)*e(n) + num_H_PI(2)*e(n-1) - den_H_PI(2)*u(n-1);
-    y(n) = num_G(1)*u(n) + num_G(2)*u(n-1) - den_G(2)*y(n-1);
+for n = 3:N  % starter på 2 pga. n-1 er nytta og matlab nytter ikke 0 som en indeks
+    y(n)= (r(n)*num(1)+r(n-1)*num(2)+r(n-2)*num(3)-y(n-1)*den(2)-y(n-2)*den(3))/den(1); % differanselikning utleda
 end
+
+
 
 t = [1:N]*Ts01;
 
-subplot(3,1,1)
-plot(t,u)
-legend('u')
 
-subplot(3,1,2)
-plot(t,e)
-legend('e')
-
-subplot(3,1,3)
-plot(t,r,'r')
-hold on
-plot(t,y,'b')
- 
 [y_H_tot,tt1]=step(H_tot,t_slutt);
 [y_H_tot_z,tt2]=step(H_tot_z,t_slutt);
 tt1 = [0; tt1(1:end-1)+Ts01*step_k];
@@ -142,10 +126,7 @@ y_H_tot = [0; y_H_tot(1:end-1)];
 tt2 = [0; tt2(1:end-1)+Ts01*step_k];
 y_H_tot_z = [0; y_H_tot_z(1:end-1)];
 
-plot(tt1,y_H_tot)
-plot(tt2,y_H_tot_z)
 
-legend('r','y','step(H_tot)','step(H_tot_z)')
 figure
 plot(t,r,'r')
 
@@ -154,7 +135,7 @@ plot(t,y,'b')
 plot(tt1,y_H_tot)
 plot(tt2,y_H_tot_z)
 
-legend('r','y','step(H\_tot)','step(H\_tot\_z)')
+legend('r','y differanse','H tot','H tot z')
 
 figure
 step(H_tot, H_tot_z)

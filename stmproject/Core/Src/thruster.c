@@ -225,7 +225,7 @@ double thruster_map_force_to_percent_single(double force)
   return percent;
 }
 
-double thruster_map_force_to_percent(double* forces, double* percents)
+void thruster_map_force_to_percent(double* forces, double* percents)
 {
   for(unsigned i = 0; i < 8; i++)
     percents[i] = thruster_map_force_to_percent_single(forces[i]);
@@ -301,7 +301,7 @@ void thruster_test_dutycycle(void)
 }
 
 // TESTS
-void thruster_test_cmd(void)
+void thruster_test_identify(void)
 {
   int mot = 0;
   while(true)
@@ -317,21 +317,25 @@ void thruster_test_cmd(void)
       thruster_set_power_percent_single(mot,12);
     }
   }
-  return;
+}
 
-//  while(1)
-//  {
-//    scanf("%lf",&power);
-//    if(power == old) continue;
-//
-//    print("setting power to %.2f\r\n",power);
-//    for(unsigned i = 0; i < 8; i++)
-//    {
-//      Motor mot = i + M1;
-//      thruster_set_power_percent(mot, power);
-//    }
-//    old = power;
-//  }
+void thruster_test_thrust(void)
+{
+    double power = 0;
+    double old = 0;
+    while(1)
+    {
+      scanf("%lf",&power);
+      if(power == old) continue;
+
+      print("setting power to %.2f\r\n",power);
+      for(unsigned i = 0; i < 8; i++)
+      {
+        Motor mot = i + M1;
+        thruster_set_power_percent_single(mot, power);
+      }
+      old = power;
+    }
 }
 
 void thruster_test()
@@ -352,19 +356,12 @@ void thruster_test()
   matrix_print_vec(6, tau);
 
   print("  Calculated values:\r\n");
-
-  //timstart();
   thruster_calc_force_safe(tau, U);
   print("  U = ");
   matrix_print_vec(8, U);
-//  for(unsigned i = 0; i < 8; i++)
-//    u[i] = thruster_map_force_to_percent(U[i]);
-//  print("  u = ");
-//  matrix_print_vec(8, u);
   thruster_calc_tau(U, tau);
   print("  result tau = ");
   matrix_print_vec(6, tau);
-  //timstop();
   print("  pwr = %.1f Watt\r\n",thruster_map_force_to_power(U));
 
   Test_Handler();
