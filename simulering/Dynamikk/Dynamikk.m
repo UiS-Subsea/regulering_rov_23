@@ -1,0 +1,72 @@
+%%%%%%%%%%%%%%%%%%
+%%%% Dynamikk %%%% 
+%%%%%%%%%%%%%%%%%%
+
+clear
+
+% Følgende kode er for deklerasjon av parameter nytta i simulering av 
+% ROV-ens dynamikk
+
+
+%%%% Generelle parameter %%%%
+
+tau = [125;0;0;37.89;0;0]; % kraftbidrag frå thusterene
+% max x 125N, 0.89 m/s 
+% max y 65N, 0.66 m/s
+% max z -145N, 0.65 m/s
+% 37.89N(F_b*r_mb) i rull gir ca 90deg. 
+
+m = 35 ;    % masse 
+l = 0.66;   % lengde
+b = 0.7;    % bredde
+h = 0.3;    % høgd
+
+rho_vann = 1000;     % kg/m^3 Vannmotstand ferskvann
+rho_saltvann = 1025; % kg/m^3 Vannmotstand saltvann
+g = 9.81;            % m/s^2 tyngdekraftens akelerasjon
+Cd = 1.5;            % dragkoefisent
+
+
+
+%%%% Treghetmoment, M %%%%
+
+J = (1/12)*m*[b^2+h^2,h^2+l^2,l^2+b^2]; % treghetsmoment
+
+M_rb = [m,m,m,J(1),J(2),J(3)]; % moment og dreiemoment
+M_A = [35, 20, 50, 1,1,1 ];    % added mass  
+
+M = M_rb + M_A;
+
+
+
+%%%% Vannmotstand overflate rotasjon, D %%%%
+
+A_x = b*h;  % overflateareal jag
+A_y = l*h;  % overflateareal svai
+A_z = b*l;  % overflateareal hiv
+A_phi = A_y + A_z;      % overflateareal rull
+A_thetha = A_x + A_z;   % overflateareal stamp
+A_psi = A_x + A_y;      % overflateareal gir
+
+A = [A_x, A_y, A_z, A_phi, A_thetha, A_psi];
+
+
+
+%%%% Oppdrift og tyngekraft, G %%%%
+
+COM = [ 0, -7.5, 30];   % center of mass
+Zm = COM(3)-COM(3);     % flytter z-koordinat for å bruke COM som referanse
+COB = [ 0, -7.5, 67.9]; % center of boyency
+Zb = COB(3)-COM(3);     % flytter Zb relativ til COM
+r_mb = norm(COB - COM) ; % avstand COB og COM
+
+F_b = 1; % oppdrift, 1N
+
+
+
+
+
+
+
+
+
