@@ -168,6 +168,7 @@ int main(void)
   //icm20948_init();
 
   //thruster_test();
+
   pid_init(&pid_vx, 0, 0, 0);
   pid_init(&pid_vy, 0, 0, 0);
   pid_init(&pid_vz, 0, 0, 0);
@@ -277,7 +278,6 @@ int main(void)
       rotasjon_target[i] += rotasjonfart_target[i] * loop_dt_sec;
     }
 
-
     // Obtain gyro data
 
 //#ifndef ENABLE_IMU
@@ -294,13 +294,21 @@ int main(void)
 
     // Update Pids
     //print("vx: %.2f, vxt: %.2f\r\n",fart[0],fart_target[0]);
+#ifdef ENABLE_PID
     tau[0] = pid_compute_speed(&pid_vx,fart_target[0],fart[0]);
     tau[1] = pid_compute_speed(&pid_vy,fart_target[1],fart[1]);
     tau[2] = pid_compute_speed(&pid_vz,fart_target[2],fart[2]);
     tau[3] = pid_compute_angle(&pid_tx,rotasjon_target[0],rotasjon[0]);
     tau[4] = pid_compute_angle(&pid_ty,rotasjon_target[1],rotasjon[1]);
     tau[5] = pid_compute_angle(&pid_tz,rotasjon_target[2],rotasjon[2]);
-
+#else
+    tau[0] = fart_target[0] * pid_vx.Kp;
+    tau[1] = fart_target[1] * pid_vy.Kp;
+    tau[2] = fart_target[2] * pid_vz.Kp;
+    tau[3] = rotasjonfart_target[0] * pid_tx.Kp;
+    tau[4] = rotasjonfart_target[1] * pid_ty.Kp;
+    tau[5] = rotasjonfart_target[2] * pid_tz.Kp;
+#endif
 
 //    print("fart_target = ");
 //    matrix_print_vec(3, fart_target);
@@ -320,7 +328,7 @@ int main(void)
 
     static double u_last[8] = {0};
 
-    const double max_percent_per_second = 10.0; // percent
+    const double max_percent_per_second = 15.0; // percent
     const double max_change = max_percent_per_second * loop_dt_sec;
     for(unsigned i = 0; i < 8; i++)
     {
